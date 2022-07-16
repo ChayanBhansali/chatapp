@@ -1,6 +1,8 @@
+import 'package:cc_chat_app/services/firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import"package:flutter/material.dart";
 
+import '../const.dart';
 import '../services/authentication.dart';
 
 class loginScreen extends StatefulWidget {
@@ -11,8 +13,7 @@ class loginScreen extends StatefulWidget {
 }
 
 class _loginScreenState extends State<loginScreen> {
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +40,27 @@ class _loginScreenState extends State<loginScreen> {
                 controller: emailController,
               ),
             ),
+
+
+            // username field
+            Padding(
+              padding: const EdgeInsets.fromLTRB(5, 0, 5, 15),
+              child: TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)
+
+                    ),
+                    hintText: "Enter your username",
+                    hintStyle: TextStyle(
+                        fontSize: 20
+                    )
+                ),
+                controller: usernameController,
+              ),
+            ),
+
+
             Padding(
               padding: const EdgeInsets.fromLTRB(5, 10, 5, 15),
               child: TextField(
@@ -97,6 +119,9 @@ class _loginScreenState extends State<loginScreen> {
                     print('$emailController');
                     Auth auth = new Auth( auth: FirebaseAuth.instance);
                     String? msg = await auth.createAccount(emailController.text, passwordController.text);
+                    Store store = new Store(auth: FirebaseAuth.instance, username: usernameController.text);
+                    String? jk = await store.addUserToFirestore();
+                    print(jk);
                     final snackBar = SnackBar(
                       content:  Text(msg!),
                     );
