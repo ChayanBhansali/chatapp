@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 class chat extends StatefulWidget {
-  final String? uid ;
+  final String? chattername ;
   final String? chatroomid;
-  const chat({Key? key, required this.uid,required this.chatroomid}) : super(key: key);
+  const chat({Key? key, required this.chattername,required this.chatroomid}) : super(key: key);
 
   @override
   _chatState createState() => _chatState();
@@ -16,19 +16,20 @@ class _chatState extends State<chat> {
   String? username = 'username' ;
   String? othermail;
   String? ownmail = FirebaseAuth.instance.currentUser?.email;
+  TextEditingController message = TextEditingController();
 
-  geting()async{
-
-      username = await chat.usernamereturn(widget.uid);
-      othermail = await chat.emailreturn(widget.uid);
-
-
-  }
+  // geting()async{
+  //
+  //     username = await chat.usernamereturn(widget.uid);
+  //     othermail = await chat.emailreturn(widget.uid);
+  //
+  //
+  // }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    geting();
+    // geting();
   }
   @override
   Widget build(BuildContext context) {
@@ -49,11 +50,14 @@ class _chatState extends State<chat> {
                         backgroundColor: Colors.grey,
                         radius: 20,
                       ),
-                      title: Text(username.toString(),style: const TextStyle(
+                      title: Text(widget.chattername.toString(),style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 20,
                           fontWeight: FontWeight.bold
                       ),),
+                      trailing: IconButton(onPressed: () {
+                        Navigator.pop(context);
+                      }, icon: Icon(Icons.arrow_back_ios),),
                     ),
                   )
               ),
@@ -91,19 +95,20 @@ class _chatState extends State<chat> {
                             return Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Container(
-                                height: 35,
+                                height: 45,
                                 width: MediaQuery.of(context).size.width,
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(data![index]['sendBy'],style: TextStyle(
+                                    Text( data![index]['sendBy'],style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 10,
+                                        fontSize: 12,
                                         // fontWeight: FontWeight.bold
                                     ),),
                                     SizedBox(height: 5,),
                                     Text(data![index]['message'],style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12,
+                                      color: Colors.black45,
+                                      fontSize: 15,
                                       // fontWeight: FontWeight.bold
                                     ),),
 
@@ -146,9 +151,15 @@ class _chatState extends State<chat> {
 
 
                         ),
+                        controller: message,
                       ),
                     ),
-                    IconButton(onPressed: (){}, icon: Icon(Icons.send))
+                    IconButton(onPressed: ()async{
+                              var time = DateTime.now();
+                              String? user = await chat.usernamereturn(FirebaseAuth.instance.currentUser?.uid);
+                              chat.message(widget.chatroomid, message.text, user, time.toString());
+                              message.clear();
+                    }, icon: Icon(Icons.send))
                   ],
                 ),
 

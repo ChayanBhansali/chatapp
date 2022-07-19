@@ -15,6 +15,9 @@ Future<String>dmgenerator ( String? ownuid , String? otheruid) async{
       'chatroomid': '${ownmail}_$othermail',
       'users': [ownname, othername]
     });
+
+    await setRoomId(ownuid!,'${ownmail}_$othermail' );
+    await setRoomId(otheruid!, '${ownmail}_$othermail');
     return '${ownmail}_$othermail';
   }catch(e){
     return e.toString();
@@ -29,7 +32,7 @@ Future<String?>usernamereturn(String? uid) async{
         .doc(uid)
         .get().then((DocumentSnapshot doc) {
         data = doc.data() as Map;
-
+        return data['userName'];
     }
     );
   }catch(e){
@@ -52,5 +55,40 @@ Future<String?>emailreturn(String? uid) async{
     return e.toString();
   }
   return data['userEmail'];
+}
+
+Future<String> message(String? chatroomid, String message , String? sendby , String time) async{
+  var data;
+  try {
+    await FirebaseFirestore.instance
+                           .collection('dms')
+                           .doc(chatroomid)
+                           .collection('CHATS')
+                           .add({
+                              'message' : message,
+                              'sendBy' : sendby,
+                              'time' : time,
+                                   } );
+
+return 'success';
+
+  }catch(e){
+    return e.toString();
+  }
+}
+
+
+
+
+setRoomId(String uid , String roomId)async{
+  List list = [roomId];
+  try{
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update({'rooms': FieldValue.arrayUnion(list)});
+  }catch(e){
+    return e.toString();
+  }
 }
 }

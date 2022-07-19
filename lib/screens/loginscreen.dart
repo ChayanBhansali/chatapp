@@ -91,7 +91,7 @@ class _loginScreenState extends State<loginScreen> {
                   onPressed: () async{
                     print('$emailController');
                     Auth auth = new Auth( auth: FirebaseAuth.instance);
-                   String? msg =   await auth.signin(emailController.text, passwordController.text) ;
+                   String? msg =   await auth.signin(emailController.text, passwordController.text,) ;
                     final snackBar = SnackBar(
                       content:  Text(msg!),
                     );
@@ -118,7 +118,7 @@ class _loginScreenState extends State<loginScreen> {
                   onPressed: () async{
                     print('$emailController');
                     Auth auth = new Auth( auth: FirebaseAuth.instance);
-                    String? msg = await auth.createAccount(emailController.text, passwordController.text);
+                    String? msg = await auth.createAccount(emailController.text, passwordController.text,usernameController.text);
                     Store store = new Store(auth: FirebaseAuth.instance, username: usernameController.text);
                     String? jk = await store.addUserToFirestore();
                     print(jk);

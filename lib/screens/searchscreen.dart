@@ -75,7 +75,7 @@ class _searchScreenState extends State<searchScreen> {
                              String tt = await chatt.dmgenerator(userid, doc[index].id);
 
 
-                               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> chat(uid: doc[index].id, chatroomid: tt,)));
+                               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> chat(chatroomid: tt, chattername: doc[index]['userName'],)));
 
 
                                 // print(doc[index]['userName']);
